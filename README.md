@@ -88,6 +88,20 @@ Registration requires `BANTO_REGISTER_TOKEN` by default. For local experiments o
 $env:BANTO_ALLOW_OPEN_REGISTER = "true"
 ```
 
+To run with Docker:
+
+```powershell
+docker compose up --build -d
+```
+
+The Docker service listens on `http://127.0.0.1:18000` and `POST /register` requires `Authorization: Bearer dev-register-token`. To stop it:
+
+```powershell
+docker compose down
+```
+
+When forwarding from the Docker container to a mock agent on the host, register the agent endpoint as `http://host.docker.internal:9001` and include `host.docker.internal` in `BANTO_ALLOWED_HOSTS` in `compose.yaml`.
+
 ## Quickstart
 
 The examples below assume Banto is running on `http://127.0.0.1:8000` and a mock agent is running on `http://127.0.0.1:9001`.

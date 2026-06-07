@@ -88,6 +88,20 @@ $env:BANTO_REGISTER_TOKEN = "dev-register-token"
 $env:BANTO_ALLOW_OPEN_REGISTER = "true"
 ```
 
+Docker で起動する場合:
+
+```powershell
+docker compose up --build -d
+```
+
+Docker 起動時は `http://127.0.0.1:18000` で待ち受け、`POST /register` には `Authorization: Bearer dev-register-token` が必要です。停止する場合:
+
+```powershell
+docker compose down
+```
+
+Docker コンテナからホスト側の mock agent へ転送する場合、agent endpoint は `http://host.docker.internal:9001` のように指定し、`compose.yaml` の `BANTO_ALLOWED_HOSTS` に `host.docker.internal` を追加してください。
+
 ## Quickstart
 
 以下の例では、Banto が `http://127.0.0.1:8000`、mock agent が `http://127.0.0.1:9001` で起動している前提です。

@@ -1,0 +1,11 @@
+services:
+  banto:
+    build: .
+    ports:
+      - "18000:8000"
+    environment:
+      BANTO_REGISTER_TOKEN: dev-register-token
+      BANTO_ALLOWED_HOSTS: host.docker.internal
+      # Enable only for local experiments that register loopback endpoints.
+      # BANTO_ALLOW_LOCALHOST: "true"
+      # BANTO_ALLOW_OPEN_REGISTER: "true"
