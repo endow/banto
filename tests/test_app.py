@@ -98,6 +98,20 @@ async def test_events_notify_to_uses_synchronous_fanout_with_partial_result(bant
     assert [(call["host"], call["path"]) for call in calls] == [("agent-b.test", "/event")]
 
 
+async def test_dashboard_serves_thin_ui_for_status_and_context() -> None:
+    app = create_app(BantoConfig(allow_open_register=True, allowed_hosts={"agent-b.test"}))
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://banto.test") as client:
+        response = await client.get("/dashboard")
+
+    assert response.status_code == 200
+    assert "text/html" in response.headers["content-type"]
+    assert "Banto Dashboard" in response.text
+    assert "Auto refresh" in response.text
+    assert "REFRESH_INTERVAL_MS = 5000" in response.text
+    assert 'fetch("/agents")' in response.text
+    assert 'fetch("/context"' in response.text
+
+
 async def test_events_reports_recipient_4xx_as_http_4xx() -> None:
     async def handler(request: httpx.Request) -> httpx.Response:
         if request.url.path == "/event":

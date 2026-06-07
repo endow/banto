@@ -54,6 +54,7 @@ Banto は現在の設計スコープの初期実装を持っています。
 - `GET /agents` と `GET /agents/{id}/status`
 - `POST /agents/{id}/context` の単一転送
 - `POST /context` の fan-out 転送
+- agent status と on-demand context 転送結果を確認する `GET /dashboard`
 - endpoint allowlist と localhost opt-in
 - local smoke check と境界テスト
 
@@ -101,6 +102,14 @@ docker compose down
 ```
 
 Docker コンテナからホスト側の mock agent へ転送する場合、agent endpoint は `http://host.docker.internal:9001` のように指定し、`compose.yaml` の `BANTO_ALLOWED_HOSTS` に `host.docker.internal` を追加してください。
+
+## Dashboard
+
+起動後、ブラウザで `http://127.0.0.1:8000/dashboard` を開くと、登録済み agent の state と heartbeat status cache を確認できます。
+
+Agent 一覧はデフォルトで 5 秒ごとに自動更新されます。これはブラウザが Banto の cached status を読むだけで、Banto が agent へ能動確認するものではありません。
+
+Dashboard の context 表示は、Banto が context を保存して覗くものではありません。画面操作時に既存の `POST /agents/{id}/context` または `POST /context` を呼び、agent から返った JSON をその場で表示します。
 
 ## Quickstart
 
@@ -226,5 +235,6 @@ Response body は Banto では解釈しません。2xx response は delivered �
 | `POST` | `/events` | event を発行します。`source` と一致する agent token が必要です。`delivered` / `failed` を返します。 |
 | `GET` | `/agents` | 登録済み agent と cached status を返します。 |
 | `GET` | `/agents/{id}/status` | 1 agent の cached status を返します。 |
+| `GET` | `/dashboard` | agent status と on-demand context 転送結果を表示する薄い UI です。 |
 | `POST` | `/agents/{id}/context` | 1 agent へ context query を転送します。 |
 | `POST` | `/context` | `scope` へ context query を fan-out し、agent ごとの結果配列を返します。 |

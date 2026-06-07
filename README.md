@@ -54,6 +54,7 @@ Implemented:
 - `GET /agents` and `GET /agents/{id}/status`.
 - `POST /agents/{id}/context` single forwarding.
 - `POST /context` fan-out forwarding.
+- `GET /dashboard` for agent status and on-demand context forwarding results.
 - Endpoint allowlist and localhost opt-in.
 - Local smoke check and boundary tests.
 
@@ -101,6 +102,14 @@ docker compose down
 ```
 
 When forwarding from the Docker container to a mock agent on the host, register the agent endpoint as `http://host.docker.internal:9001` and include `host.docker.internal` in `BANTO_ALLOWED_HOSTS` in `compose.yaml`.
+
+## Dashboard
+
+After startup, open `http://127.0.0.1:8000/dashboard` in a browser to inspect registered agents, their state, and cached heartbeat status.
+
+The agent list auto-refreshes every 5 seconds by default. This only reads cached status from Banto; Banto does not actively check agent endpoints.
+
+The dashboard does not store or inspect context inside Banto. When you query context from the UI, it calls the existing `POST /agents/{id}/context` or `POST /context` endpoints and displays the returned JSON for that request.
 
 ## Quickstart
 
@@ -226,5 +235,6 @@ Response body is not interpreted by Banto. Any 2xx response counts as delivered.
 | `POST` | `/events` | Publishes an event. Requires agent token matching `source`; returns `delivered` / `failed`. |
 | `GET` | `/agents` | Returns registered agents and cached status. |
 | `GET` | `/agents/{id}/status` | Returns one agent's cached status. |
+| `GET` | `/dashboard` | Thin UI for agent status and on-demand context forwarding results. |
 | `POST` | `/agents/{id}/context` | Forwards one context query to one agent. |
 | `POST` | `/context` | Fan-out context query to `scope`; returns per-agent result array. |

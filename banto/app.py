@@ -5,8 +5,10 @@ from typing import Any
 
 import httpx
 from fastapi import Depends, FastAPI, Header, HTTPException, Path, Request
+from fastapi.responses import HTMLResponse
 
 from banto.config import BantoConfig
+from banto.dashboard import DASHBOARD_HTML
 from banto.models import ContextFanoutRequest, ContextRequest, EventRequest, HeartbeatRequest, RegisterRequest
 from banto.security import bearer_token
 from banto.state import AgentRecord, BantoState, agent_view, utc_now
@@ -25,6 +27,10 @@ def create_app(config: BantoConfig | None = None, transport: httpx.AsyncBaseTran
         if not agent:
             raise HTTPException(status_code=401, detail="invalid agent token")
         return agent
+
+    @app.get("/dashboard", response_class=HTMLResponse)
+    async def dashboard() -> str:
+        return DASHBOARD_HTML
 
     @app.post("/register")
     async def register(
